@@ -1,0 +1,25 @@
+def apriori(dataset, min_support):
+    itemsets = [[item] for transaction in dataset for item in transaction]
+    frequent_itemsets = []
+
+    while itemsets:
+        counts = {tuple(itemset): sum(1 for transaction in dataset if set(itemset).issubset(set(transaction))) for itemset in itemsets}
+        frequent_itemsets.extend([list(itemset) for itemset, count in counts.items() if count >= min_support])
+        itemsets = [list(set(itemset1) | set(itemset2)) for itemset1 in itemsets for itemset2 in itemsets if len(set(itemset1) | set(itemset2)) == len(itemset1) + 1]
+
+    return frequent_itemsets
+
+# Example usage:
+dataset = [
+    ['bread', 'milk'],
+    ['bread', 'diaper', 'beer', 'egg'],
+    ['milk', 'diaper', 'beer', 'cola'],
+    ['bread', 'milk', 'diaper', 'beer'],
+    ['bread', 'milk', 'diaper', 'cola']
+]
+
+min_support = 3
+frequent_itemsets = apriori(dataset, min_support)
+print("Frequent itemsets with min support of", min_support, ":")
+for itemset in frequent_itemsets:
+    print(itemset)
